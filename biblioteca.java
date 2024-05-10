@@ -1,12 +1,9 @@
-Para hacer que todo funcione en un solo código y gestionar una biblioteca, necesitas hacer algunas correcciones y ajustes en el código proporcionado. Aquí está el código unificado con las correcciones:
-
-```java
 import java.util.*;
 
 public class Biblioteca {
     private String direccion;
     private String nombre;
-    private Collection<Cuenta> cuentaList;
+    private List<Cuenta> cuentaList;
 
     public Biblioteca(String nombre, String direccion) {
         this.nombre = nombre;
@@ -30,7 +27,7 @@ public class Biblioteca {
 
 class Cuenta {
     private Biblioteca biblioteca;
-    private Collection<Persona> personaList;
+    private List<Persona> personaList;
     private String contrasena;
     private String correo;
     private int multasPendientes;
@@ -46,6 +43,18 @@ class Cuenta {
     public void registrar(Persona persona) {
         personaList.add(persona);
         System.out.println("Registro exitoso!");
+    }
+
+    public String getContrasena() {
+        return contrasena;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public int getMultasPendientes() {
+        return multasPendientes;
     }
 }
 
@@ -111,7 +120,7 @@ class Autor extends Persona {
 }
 
 class Lector extends Persona {
-    private Collection<Accion> accion;
+    private List<Accion> accion;
     private String librosFavoritos;
 
     public Lector(String nombre, String correo, String telefono, int edad, String genero, String librosFavoritos) {
@@ -186,9 +195,15 @@ class Reserva extends Accion {
     private Date fechaReserva;
     private Date fechaRetiro;
     private Date fechaDevolucion;
+
+    public Reserva(Date fechaReserva, Date fechaRetiro, Date fechaDevolucion) {
+        this.fechaReserva = fechaReserva;
+        this.fechaRetiro = fechaRetiro;
+        this.fechaDevolucion = fechaDevolucion;
+    }
 }
 
-class Publicacion {
+abstract class Publicacion {
     private String titulo;
     private String autor;
     private int anioPublicacion;
@@ -205,7 +220,8 @@ class Libro extends Publicacion {
     private String edicion;
     private String volumen;
 
-    public Libro(String titulo, String autor, int anioPublicacion, Categoria categoria, String edicion, String volumen) {
+    public Libro(String titulo, String autor, int anioPublicacion, Categoria categoria, String edicion, String volumen
+    ) {
         super(titulo, autor, anioPublicacion);
         this.categoria = categoria;
         this.edicion = edicion;
@@ -243,13 +259,39 @@ enum Categoria {
 }
 
 class CopiaPublicacion {
-    private Collection<Accion> accion;
+    private List<Accion> accion;
     private Publicacion publicacion;
     private String numCopia;
 
+    public CopiaPublicacion(Publicacion publicacion, String numCopia) {
+        this.publicacion = publicacion;
+        this.numCopia = numCopia;
+        this.accion = new ArrayList<>();
+    }
+
     public void prestar() {
         if (accion.isEmpty()) {
-            accion.add(Accion.PRESTADO);
+            accion.add(Accion.Prestado);
             System.out.println("La copia de la publicación ha sido prestada.");
         } else {
-            System.out.println("La copia de
+            System.out.println("La copia de la publicación ya está prestada.");
+        }
+    }
+
+    public void devolver() {
+        if (accion.contains(Accion.Prestado)) {
+            accion.remove(Accion.Prestado);
+            System.out.println("La copia de la publicación ha sido devuelta.");
+        } else {
+            System.out.println("La copia de la publicación no está prestada.");
+        }
+    }
+
+    public void consultarEstado() {
+        if (accion.contains(Accion.Prestado)) {
+            System.out.println("La copia de la publicación está prestada.");
+        } else {
+            System.out.println("La copia de la publicación no está prestada.");
+        }
+    }
+}
