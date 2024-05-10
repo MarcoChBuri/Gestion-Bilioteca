@@ -1,297 +1,164 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
 
-public class Biblioteca {
-    private String direccion;
-    private String nombre;
-    private List<Cuenta> cuentaList;
+// Enum para categorías de publicaciones
+enum Categoria {
+    LIBRO,
+    REVISTA,
+    PERIODICO
+}
 
-    public Biblioteca(String nombre, String direccion) {
+// Clase Persona
+class Persona {
+    protected String nombre;
+    protected String direccion;
+    protected String correo;
+    protected String telefono;
+    protected int edad;
+    protected String genero;
+
+    public Persona(String nombre, String direccion, String correo, String telefono, int edad, String genero) {
         this.nombre = nombre;
         this.direccion = direccion;
-        this.cuentaList = new ArrayList<>();
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void imprimirInformacion() {
-        System.out.println("Nombre: " + nombre);
-        System.out.println("Dirección: " + direccion);
-    }
-}
-
-class Cuenta {
-    private Biblioteca biblioteca;
-    private List<Persona> personaList;
-    private String contrasena;
-    private String correo;
-    private int multasPendientes;
-
-    public Cuenta(Biblioteca biblioteca, String contrasena, String correo) {
-        this.biblioteca = biblioteca;
-        this.contrasena = contrasena;
-        this.correo = correo;
-        this.multasPendientes = 0;
-        this.personaList = new ArrayList<>();
-    }
-
-    public void registrar(Persona persona) {
-        personaList.add(persona);
-        System.out.println("Registro exitoso!");
-    }
-
-    public String getContrasena() {
-        return contrasena;
-    }
-
-    public String getCorreo() {
-        return correo;
-    }
-
-    public int getMultasPendientes() {
-        return multasPendientes;
-    }
-}
-
-abstract class Persona {
-    private String nombre;
-    private String correo;
-    private String telefono;
-    private int edad;
-    private String genero;
-
-    public Persona(String nombre, String correo, String telefono, int edad, String genero) {
-        this.nombre = nombre;
         this.correo = correo;
         this.telefono = telefono;
         this.edad = edad;
         this.genero = genero;
     }
+}
 
-    public String getNombre() {
-        return nombre;
+// Clase Cuenta
+class Cuenta {
+    private String contraseña;
+    private String correo;
+    private int multaPendiente;
+
+    public Cuenta(String contraseña, String correo) {
+        this.contraseña = contraseña;
+        this.correo = correo;
+        this.multaPendiente = 0;
     }
 
-    public String getCorreo() {
-        return correo;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public int getEdad() {
-        return edad;
-    }
-
-    public String getGenero() {
-        return genero;
+    public void registrarMulta(int multa) {
+        this.multaPendiente += multa;
+        System.out.println("Multa registrada: $" + multa);
     }
 }
 
-class Autor extends Persona {
-    private String obras;
-    private String estiloLiterario;
-    private String bibliografia;
-
-    public Autor(String nombre, String correo, String telefono, int edad, String genero, String obras, String estiloLiterario, String bibliografia) {
-        super(nombre, correo, telefono, edad, genero);
-        this.obras = obras;
-        this.estiloLiterario = estiloLiterario;
-        this.bibliografia = bibliografia;
-    }
-
-    public void buscar() {
-        System.out.println("Buscando autor...");
-    }
-
-    public void agregar() {
-        System.out.println("Agregando autor...");
-    }
-
-    public void eliminar() {
-        System.out.println("Eliminando autor...");
-    }
-}
-
+// Clase Lector
 class Lector extends Persona {
-    private List<Accion> accion;
-    private String librosFavoritos;
+    private ArrayList<Publicacion> publicacionesPrestadas;
 
-    public Lector(String nombre, String correo, String telefono, int edad, String genero, String librosFavoritos) {
-        super(nombre, correo, telefono, edad, genero);
-        this.librosFavoritos = librosFavoritos;
-        this.accion = new ArrayList<>();
+    public Lector(String nombre, String direccion, String correo, String telefono, int edad, String genero) {
+        super(nombre, direccion, correo, telefono, edad, genero);
+        this.publicacionesPrestadas = new ArrayList<>();
     }
 
-    public void buscarLibro() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Ingrese el título del libro que desea buscar:");
-        String titulo = scanner.nextLine();
-
-        // Aquí iría la lógica para buscar el libro en la biblioteca
-
-        System.out.println("Libro encontrado: " + titulo);
-    }
-
-    public void pedir() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Ingrese el título del libro que desea pedir:");
-        String titulo = scanner.nextLine();
-
-        // Aquí iría la lógica para pedir el libro a la biblioteca
-
-        System.out.println("Libro pedido: " + titulo);
-    }
-
-    public void reservar() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Ingrese el título del libro que desea reservar:");
-        String titulo = scanner.nextLine();
-
-        // Aquí iría la lógica para reservar el libro en la biblioteca
-
-        System.out.println("Libro reservado: " + titulo);
-    }
-
-    public void verificarMultas() {
-        // Aquí iría la lógica para verificar si el lector tiene multas pendientes
-
-        System.out.println("No se encontraron multas pendientes.");
+    public void prestarPublicacion(Publicacion publicacion) {
+        publicacionesPrestadas.add(publicacion);
+        System.out.println("Publicación prestada: " + publicacion.titulo);
     }
 }
 
-class Accion {
-    private Lector lector;
-    private CopiaPublicacion copiaPublicacion;
+// Clase Autor
+class Autor extends Persona {
+    private ArrayList<Publicacion> publicaciones;
 
-    public void notificar() {
-        System.out.println("Notifying user...");
-        // Add your notification logic here
+    public Autor(String nombre, String direccion, String correo, String telefono, int edad, String genero) {
+        super(nombre, direccion, correo, telefono, edad, genero);
+        this.publicaciones = new ArrayList<>();
     }
 
-    public void cancelar() {
-        System.out.println("Canceling action...");
-        // Add your cancellation logic here
-    }
-
-    public void verificar() {
-        System.out.println("Verifying action...");
-        // Add your verification logic here
-    }
-
-    public void registrar() {
-        System.out.println("Registering action...");
-        // Add your registration logic here
+    public void agregarPublicacion(Publicacion publicacion) {
+        publicaciones.add(publicacion);
+        System.out.println("Publicación agregada: " + publicacion.titulo);
     }
 }
 
-class Reserva extends Accion {
-    private Date fechaReserva;
-    private Date fechaRetiro;
-    private Date fechaDevolucion;
+// Clase Publicacion
+class Publicacion {
+    protected String titulo;
+    protected String editorial;
+    protected Date fechaPublicacion;
+    protected Categoria categoria;
 
-    public Reserva(Date fechaReserva, Date fechaRetiro, Date fechaDevolucion) {
-        this.fechaReserva = fechaReserva;
-        this.fechaRetiro = fechaRetiro;
-        this.fechaDevolucion = fechaDevolucion;
-    }
-}
-
-abstract class Publicacion {
-    private String titulo;
-    private String autor;
-    private int anioPublicacion;
-
-    public Publicacion(String titulo, String autor, int anioPublicacion) {
+    public Publicacion(String titulo, String editorial, Date fechaPublicacion, Categoria categoria) {
         this.titulo = titulo;
-        this.autor = autor;
-        this.anioPublicacion = anioPublicacion;
-    }
-}
-
-class Libro extends Publicacion {
-    private Categoria categoria;
-    private String edicion;
-    private String volumen;
-
-    public Libro(String titulo, String autor, int anioPublicacion, Categoria categoria, String edicion, String volumen
-    ) {
-        super(titulo, autor, anioPublicacion);
+        this.editorial = editorial;
+        this.fechaPublicacion = fechaPublicacion;
         this.categoria = categoria;
-        this.edicion = edicion;
-        this.volumen = volumen;
     }
 }
 
-class Periodico extends Publicacion {
-    private String articulos;
-    private String titulares;
+// Clase Biblioteca
+class Biblioteca {
+    private String nombre;
+    private String direccion;
+    private Persona encargado;
 
-    public Periodico(String titulo, String autor, int anioPublicacion, String articulos, String titulares) {
-        super(titulo, autor, anioPublicacion);
-        this.articulos = articulos;
-        this.titulares = titulares;
+    public Biblioteca(String nombre, String direccion, Persona encargado) {
+        this.nombre = nombre;
+        this.direccion = direccion;
+        this.encargado = encargado;
+    }
+
+    public void imprimirInformacion() {
+        System.out.println("Nombre de la biblioteca: " + nombre);
+        System.out.println("Dirección de la biblioteca: " + direccion);
+        System.out.println("Información del Encargado:");
+        System.out.println("Nombre: " + encargado.nombre);
+        System.out.println("Correo: " + encargado.correo);
+        System.out.println("Teléfono: " + encargado.telefono);
     }
 }
 
-class Revista extends Publicacion {
-    private Categoria categoria;
-    private String edicion;
+// Clase Multa
+class Multa {
+    private Date fechaEmision;
+    private double monto;
+    private boolean estadoDePago;
+    private Lector lector;
 
-    public Revista(String titulo, String autor, int anioPublicacion, Categoria categoria, String edicion) {
-        super(titulo, autor, anioPublicacion);
-        this.categoria = categoria;
-        this.edicion = edicion;
+    public Multa(Date fechaEmision, double monto, Lector lector) {
+        this.fechaEmision = fechaEmision;
+        this.monto = monto;
+        this.estadoDePago = false;
+        this.lector = lector;
     }
 }
 
-enum Categoria {
-    NOVELA,
-    CIENTIFICO,
-    MISTERIO,
-    ROMANCE
-}
+// Clase Main
+public class Main {
+    public static void main(String[] args) {
+        // Crear un autor
+        Autor autor = new Autor("John Doe", "Calle Principal 123", "johndoe@example.com", "123456789", 40, "Masculino");
 
-class CopiaPublicacion {
-    private List<Accion> accion;
-    private Publicacion publicacion;
-    private String numCopia;
+        // Crear una publicación
+        Publicacion libro = new Publicacion("Mi Libro", "Editorial X", new Date(), Categoria.LIBRO);
 
-    public CopiaPublicacion(Publicacion publicacion, String numCopia) {
-        this.publicacion = publicacion;
-        this.numCopia = numCopia;
-        this.accion = new ArrayList<>();
-    }
+        // Agregar publicación al autor
+        autor.agregarPublicacion(libro);
 
-    public void prestar() {
-        if (accion.isEmpty()) {
-            accion.add(Accion.Prestado);
-            System.out.println("La copia de la publicación ha sido prestada.");
-        } else {
-            System.out.println("La copia de la publicación ya está prestada.");
-        }
-    }
+        // Crear un lector
+        Lector lector = new Lector("Alice", "Calle Secundaria 456", "alice@example.com", "987654321", 25, "Femenino");
 
-    public void devolver() {
-        if (accion.contains(Accion.Prestado)) {
-            accion.remove(Accion.Prestado);
-            System.out.println("La copia de la publicación ha sido devuelta.");
-        } else {
-            System.out.println("La copia de la publicación no está prestada.");
-        }
-    }
+        // Crear una cuenta para el lector
+        Cuenta cuentaLector = new Cuenta("password123", "alice@example.com");
 
-    public void consultarEstado() {
-        if (accion.contains(Accion.Prestado)) {
-            System.out.println("La copia de la publicación está prestada.");
-        } else {
-            System.out.println("La copia de la publicación no está prestada.");
-        }
+        // Asignar cuenta al lector
+
+        // Prestar publicación al lector
+        lector.prestarPublicacion(libro);
+
+        // Registrar una multa al lector
+        Multa multa = new Multa(new Date(), 20, lector);
+        
+
+        // Crear una biblioteca
+        Persona encargado = new Persona("Pedro", "Avenida Central 789", "pedro@example.com", "987654321", 35, "Masculino");
+        Biblioteca biblioteca = new Biblioteca("Biblioteca Municipal", "Avenida Central 789", encargado);
+
+        // Imprimir información de la biblioteca
+        biblioteca.imprimirInformacion();
     }
 }
